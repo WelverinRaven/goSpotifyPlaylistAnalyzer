@@ -30,7 +30,9 @@ type SimpelArtist struct {
 
 // ExternalURL represents a Spotify External URL Object (simple)
 type ExternalURL struct {
-	//TODO: look at to implement
+	Value string `json:"value"` //An external, public URL to the object.
+	Key   string `json:"key"`   //The type of the URL, for example:
+	//- "spotify" - The Spotify URL for the object.
 }
 
 // Image represents a Spotify Image Object
@@ -127,8 +129,8 @@ type PlaylistTrack struct {
 	//Note that some very old playlists may return null in this field.
 	AddedBy PublicUser `json:"added_by,omitemtpy"` //a user object 	The Spotify user who added the track.
 	//Note that some very old playlists may return null in this field.
-	IsLocal bool  `json:"is_local,omitempty"` //a Boolean 	Whether this track is a local file or not.
-	Track   Track `json:"track,omitempty"`    //a track object 	Information about the track.
+	IsLocal bool               `json:"is_local,omitempty"` //a Boolean 	Whether this track is a local file or not.
+	Track   PlaylistTrackPager `json:"track,omitempty"`    //a track object 	Information about the track.
 }
 
 // Track represents a Spotify Track Object
@@ -138,12 +140,12 @@ type Track struct {
 	AvailableMarkets []string       `json:"available_markets,omitempty"` //array of strings 	A list of the countries in which the track can be played, identified by their ISO 3166-1 alpha-2 code.
 	DiscNumber       int32          `json:"disc_number,omitempty"`       //The disc number (usually 1 unless the album consists of more than one disc).
 	DurationMS       int32          `json:"duration_ms,omitempty"`       //The track length in milliseconds.
-	Explicit         bool           `json:"explicit,omitempty`           //Whether or not the track has explicit lyrics ( true = yes it does; false = no it does not OR unknown).
+	Explicit         bool           `json:"explicit,omitempty"`          //Whether or not the track has explicit lyrics ( true = yes it does; false = no it does not OR unknown).
 	ExternalIDs      []ExternalID   `json:"external_ids,omitempty"`      //an external ID object 	Known external IDs for the track.
 	ExternalURLs     []ExternalURL  `json:"external_urls,omitempty"`     //an external URL object 	Known external URLs for this track.
 	HREF             string         `json:"href,omitempty"`              //A link to the Web API endpoint providing full details of the track.
 	ID               string         `json:"id,omitempty"`                //The Spotify ID for the track.
-	IsPlayable       bool           `json:"is_playable`                  //Part of the response when Track Relinking is applied. If true , the track is playable in the given market. Otherwise false.
+	IsPlayable       bool           `json:"is_playable"`                 //Part of the response when Track Relinking is applied. If true , the track is playable in the given market. Otherwise false.
 	LinkedFrom       LinkedTrack    `json:"linked_from,omitempty"`       //a linked track object 	Part of the response when Track Relinking is applied, and the requested track has been replaced with different track. The track in the linked_from object contains information about the originally requested track.
 	Restrictions     Restrictions   `json:"restrictions,omitempty"`      //a restrictions object 	Part of the response when Track Relinking is applied, the original track is not available in the given market, and Spotify did not have any tracks to relink it with. The track response will still contain metadata for the original track, and a restrictions object containing the reason why the track is not available: "restrictions" : {"reason" : "market"}
 	Name             string         `json:"name,omitempty"`              //The name of the track.
@@ -155,6 +157,26 @@ type Track struct {
 	Popularity       int32          `json:"Popularity,omitempty"`        //The popularity of the track. The value will be between 0 and 100, with 100 being the most popular.
 	//The popularity of a track is a value between 0 and 100, with 100 being the most popular. The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.
 	//Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past. Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity is derived mathematically from track popularity. Note that the popularity value may lag actual popularity by a few days: the value is not updated in real time.
+}
+
+// PlaylistTrackPager is a Spotify Paging Object containing PlaylistTrack Objects
+type PlaylistTrackPager struct {
+	HREF     string          `json:"href,omitempty"`     //A link to the Web API endpoint returning the full result of the request.
+	Items    []PlaylistTrack `json:"items,omitempty"`    //an array of objects 	The requested data.
+	Limit    int32           `json:"limit"`              //The maximum number of items in the response (as set in the query or by default).
+	Next     string          `json:"next,omitempty"`     //URL to the next page of items. ( null if none)
+	Offset   int32           `json:"offset,omitempty"`   //The offset of the items returned (as set in the query or by default).
+	Previous string          `json:"previous,omitempty"` //URL to the previous page of items. ( null if none)
+	Total    int32           `json:"total"`              //The maximum number of items available to return.
+}
+
+// ExternalID represents a Spotify ExternalID Object
+type ExternalID struct {
+	Value string `json:"value"` //An external identifier for the object.
+	Key   string `json:"key"`   //The identifier type, for example:
+	//- "isrc" - International Standard Recording Code
+	//- "ean" - International Article Number
+	//- "upc" - Universal Product Code
 }
 
 // AuthResponse represents a Spotify AccessToken
